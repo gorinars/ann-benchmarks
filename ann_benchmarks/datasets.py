@@ -257,6 +257,16 @@ def sift_hamming(out_fn, fn):
         X_train, X_test = train_test_split(X, test_size = 1000)
         write_output(X_train, X_test, out_fn, 'hamming', 'bit')
 
+def fisher_xvectors(out_fn):
+    import kaldi_io
+    x_train = []
+    x_test = []
+    for key,vec in kaldi_io.read_vec_flt_ark("../ivectors_spk_lda.ark"):
+        x_test.append(vec)
+    for key,vec in kaldi_io.read_vec_flt_ark("../ivectors_lda.ark"):
+        x_train.append(vec)
+    write_output(numpy.array(x_train), numpy.array(x_test), out_fn, 'angular')
+
 def lastfm(out_fn, n_dimensions, test_size=50000):
     # This tests out ANN methods for retrieval on simple matrix factorization based
     # recommendation algorithms. The idea being that the query/test vectors are user factors
@@ -317,4 +327,5 @@ DATASETS = {
     'word2bits-800-hamming': lambda out_fn: word2bits(out_fn, '400K', 'w2b_bitlevel1_size800_vocab400K'),
     'lastfm-64-dot': lambda out_fn: lastfm(out_fn, 64),
     'sift-256-hamming': lambda out_fn: sift_hamming(out_fn, 'sift.hamming.256'),
+    'fisher-xvectors': lambda out_fn: fisher_xvectors(out_fn),
 }
